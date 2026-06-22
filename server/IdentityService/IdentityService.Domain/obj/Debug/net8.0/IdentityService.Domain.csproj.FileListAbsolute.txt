@@ -9,3 +9,4 @@ C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Doma
 C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Domain\obj\Debug\net8.0\refint\IdentityService.Domain.dll
 C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Domain\obj\Debug\net8.0\IdentityService.Domain.pdb
 C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Domain\obj\Debug\net8.0\ref\IdentityService.Domain.dll
+C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Domain\obj\Debug\net8.0\IdentityService.Domain.sourcelink.json

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdentityService.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4080b9dab8df335e6270e98c2074457d8a9baa4")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdentityService.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdentityService.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

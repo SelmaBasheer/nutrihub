@@ -13,3 +13,4 @@ C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Appl
 C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Application\obj\Debug\net8.0\refint\IdentityService.Application.dll
 C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Application\obj\Debug\net8.0\IdentityService.Application.pdb
 C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Application\obj\Debug\net8.0\ref\IdentityService.Application.dll
+C:\Users\selma\source\repos\NutriHub\server\IdentityService\IdentityService.Application\obj\Debug\net8.0\IdentityService.Application.sourcelink.json
