@@ -4,7 +4,8 @@ using IdentityService.Domain.Enums;
 
 namespace IdentityService.Application.DTOs
 {
-    public record UserDto(
+    public record UserDto
+    (
         Guid Id,
         string FirstName,
         string LastName,
