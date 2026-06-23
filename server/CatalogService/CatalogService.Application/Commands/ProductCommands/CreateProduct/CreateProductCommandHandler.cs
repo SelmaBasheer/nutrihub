@@ -9,18 +9,21 @@ namespace CatalogService.Application.Commands.ProductCommands.CreateProduct
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
     {
         private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly ILogger _logger = Log.ForContext<CreateProductCommandHandler>();
 
-        public CreateProductCommandHandler(IProductRepository productRepository)
+        public CreateProductCommandHandler(IProductRepository productRepository,
+            ICategoryRepository categoryRepository)
         {
             _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             _logger.Information("Creating new product with name { Name}", request.Name);
 
-            var categoryExists = await _productRepository.GetCategoryByIdAsync(request.CategoryId);
+            var categoryExists = await _categoryRepository.GetCategoryByIdAsync(request.CategoryId);
 
             if (categoryExists is null)
             {

@@ -10,6 +10,11 @@ namespace CatalogService.Application.Queries.ProductQueries.GetAllProducts
         private readonly IProductRepository _productRepository;
         private readonly ILogger _logger = Log.ForContext<GetAllProductsQueryHandler>();
 
+        public GetAllProductsQueryHandler(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
+
         public async Task<List<ProductDto>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
         {
             _logger.Information("Fetching all products.");
