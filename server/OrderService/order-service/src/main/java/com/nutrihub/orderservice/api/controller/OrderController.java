@@ -30,7 +30,7 @@ import java.util.UUID;
 public class OrderController {
 
     private final PlaceOrderCommandHandler placeOrderCommandHandler;
-    private  final CancelOrderCommandHandler cancelOrderCommandHandler;
+    private final CancelOrderCommandHandler cancelOrderCommandHandler;
     private final UpdateOrderStatusCommandHandler updateOrderStatusCommandHandler;
     private final GetOrderByIdQueryHandler getOrderByIdQueryHandler;
     private final GetCustomerOrdersQueryHandler getCustomerOrdersQueryHandler;
