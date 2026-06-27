@@ -15,6 +15,16 @@ namespace IdentityService.API.Extensions
 {
     public static class ServiceExtensions
     {
+        public static IServiceCollection AddRouteOptions(this IServiceCollection services,
+                IConfiguration configuration)
+        {
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+            });
+            return services;
+        }
+
         public static IServiceCollection AddDatabase(this IServiceCollection services,
                 IConfiguration configuration)
         {
