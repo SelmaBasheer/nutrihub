@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilog();
 
 // Add services to the container.
+builder.Services.AddRouteOptions(builder.Configuration);
 builder.Services.AddMongoDatabase(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddApplicationServices();
