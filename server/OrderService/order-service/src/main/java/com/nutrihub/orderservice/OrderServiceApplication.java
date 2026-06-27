@@ -13,9 +13,9 @@ public class OrderServiceApplication {
 		SpringApplication.run(OrderServiceApplication.class, args);
 
 		try {
-			Desktop.getDesktop().browse(new URI("http://localhost:5008/swagger-ui.html"));
+			Desktop.getDesktop().browse(new URI("http://localhost:5003/swagger-ui.html"));
 		} catch (Exception e) {
-			System.out.println("Open Swagger at: http://localhost:5008/swagger-ui.html");
+			System.out.println("Open Swagger at: http://localhost:5003/swagger-ui.html");
 		}
 	}
 
