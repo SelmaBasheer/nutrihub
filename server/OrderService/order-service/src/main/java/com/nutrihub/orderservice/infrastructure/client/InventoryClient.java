@@ -11,7 +11,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InventoryClient {
     private final RestTemplate restTemplate;
-    private static final String INVENTORY_BASE_URL = "http://localhost:5009/api/inventory";
+    private static final String INVENTORY_BASE_URL = "http://localhost:5004/api/inventory";
 
     public void reduceStock(UUID productId, int quantity) {
         Map<String, Object> requestBody = new HashMap<>();
