@@ -35,4 +35,3 @@ jwt:
   issuer: NutriHub.IdentityService
   audience: NutriHub.Client
   expiration: 3600000
-    port: 9090
