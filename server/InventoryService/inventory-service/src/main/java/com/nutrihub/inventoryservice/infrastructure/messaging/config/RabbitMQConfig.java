@@ -1,5 +1,8 @@
 package com.nutrihub.inventoryservice.infrastructure.messaging.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nutrihub.inventoryservice.infrastructure.messaging.events.OrderCancelledEvent;
 import com.nutrihub.inventoryservice.infrastructure.messaging.events.OrderPlacedEvent;
 import org.springframework.amqp.core.Queue;
@@ -37,6 +40,10 @@ public class RabbitMQConfig {
 
     @Bean
     public MessageConverter jsonMessageConverter() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
         converter.setClassMapper(classMapper());
         return converter;
