@@ -19,3 +19,13 @@ server:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+grpc:
+  server:
+    port: 9090
+
+jwt:
+  secret: NutriHub@SuperSecretKey#2026!XyZ987
+  issuer: NutriHub.IdentityService
+  audience: NutriHub.Client
+  expiration: 3600000
