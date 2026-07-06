@@ -13,6 +13,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 server:
   port: 5004
 
@@ -29,3 +35,4 @@ jwt:
   issuer: NutriHub.IdentityService
   audience: NutriHub.Client
   expiration: 3600000
+    port: 9090
