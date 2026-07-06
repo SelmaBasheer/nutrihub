@@ -13,9 +13,19 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 server:
-  port: 5009
+  port: 5004
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+grpc:
+  server:
+    port: 9090

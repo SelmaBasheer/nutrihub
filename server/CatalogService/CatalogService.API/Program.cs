@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddSerilog();
 
 // Add services to the container.
+builder.Services.AddRouteOptions(builder.Configuration);
 builder.Services.AddMongoDatabase(builder.Configuration);
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddApplicationServices();
@@ -17,6 +18,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddInventoryGrpcClient();
 
 var app = builder.Build();
 
