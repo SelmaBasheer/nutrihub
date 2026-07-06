@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CatalogService.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase

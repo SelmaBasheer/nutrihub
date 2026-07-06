@@ -14,9 +14,9 @@
 			SpringApplication.run(InventoryServiceApplication.class, args);
 
 			try {
-				Desktop.getDesktop().browse(new URI("http://localhost:5009/swagger-ui.html"));
+				Desktop.getDesktop().browse(new URI("http://localhost:5004/swagger-ui.html"));
 			} catch (Exception e) {
-				System.out.println("Open Swagger at: http://localhost:5009/swagger-ui.html");
+				System.out.println("Open Swagger at: http://localhost:5004/swagger-ui.html");
 			}
 		}
 
