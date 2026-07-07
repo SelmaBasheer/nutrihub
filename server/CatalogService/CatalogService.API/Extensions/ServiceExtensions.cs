@@ -6,6 +6,7 @@ using CatalogService.Infrastructure.Persistence;
 using CatalogService.Infrastructure.Repositories;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -115,10 +116,11 @@ namespace CatalogService.API.Extensions
             return services;
         }
 
-        public static IServiceCollection AddInventoryGrpcClient(this IServiceCollection services)
+        public static IServiceCollection AddInventoryGrpcClient(this IServiceCollection services, IConfiguration configuration)
         {
+            var grpcUrl = configuration["GrpcSettings:InventoryUrl"];
             services.AddSingleton<IInventoryGrpcClient>(sp =>
-                new InventoryGrpcClient("http://localhost:9090"));
+                new InventoryGrpcClient(grpcUrl!));
 
             return services;
         }
