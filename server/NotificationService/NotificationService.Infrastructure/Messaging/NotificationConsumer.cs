@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NotificationService.Application.Contracts;
@@ -14,16 +15,19 @@ namespace NotificationService.Infrastructure.Messaging
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<NotificationConsumer> _logger;
+        private readonly IConfiguration _configuration; 
         private IConnection? _connection;
         private IChannel? _channel;
         private const string QueueName = "notification.orders";
 
         public NotificationConsumer(
             IServiceProvider serviceProvider,
-            ILogger<NotificationConsumer> logger )
+            ILogger<NotificationConsumer> logger,
+            IConfiguration configuration)
         {
             _serviceProvider = serviceProvider;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -31,10 +35,10 @@ namespace NotificationService.Infrastructure.Messaging
             // Create connection to RabbitMQ
             var factory = new ConnectionFactory
             {
-                HostName = "localhost",
-                Port = 5672,
-                UserName = "guest",
-                Password = "guest"
+                HostName = _configuration["RabbitMQ:HostName"] ?? "localhost",
+                Port = int.Parse(_configuration["RabbitMQ:Port"] ?? "5672"),
+                UserName = _configuration["RabbitMQ:UserName"] ?? "guest",
+                Password = _configuration["RabbitMQ:Password"] ?? "guest"
             };
 
             _connection = await factory.CreateConnectionAsync(cancellationToken);    
