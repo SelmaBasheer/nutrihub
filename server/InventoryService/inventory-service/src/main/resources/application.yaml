@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: inventory-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/NutriHubInventoryDb
+    username: root
+    password: Admin@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 5004
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+grpc:
+  server:
+    port: 9090
+
+jwt:
+  secret: NutriHub@SuperSecretKey#2026!XyZ987
+  issuer: NutriHub.IdentityService
+  audience: NutriHub.Client
+  expiration: 3600000

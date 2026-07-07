@@ -1,9 +1,10 @@
 ﻿using CatalogService.Application.Commands.CategoryCommands.CreateCategory;
+using CatalogService.Application.Contracts;
 using CatalogService.Domain.Repositories;
+using CatalogService.Infrastructure.GrpcClients;
 using CatalogService.Infrastructure.Persistence;
 using CatalogService.Infrastructure.Repositories;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -114,8 +115,6 @@ namespace CatalogService.API.Extensions
 
             return services;
         }
-<<<<<<< Updated upstream
-=======
 
         public static IServiceCollection AddInventoryGrpcClient(this IServiceCollection services, IConfiguration configuration)
         {
@@ -126,6 +125,5 @@ namespace CatalogService.API.Extensions
             return services;
         }
 
->>>>>>> Stashed changes
     }
 }

@@ -1,8 +1,9 @@
-﻿using CatalogService.Domain.Entities;
+﻿using CatalogService.Application.Contracts;
+using CatalogService.Domain.Entities;
 using CatalogService.Domain.Repositories;
 using MediatR;
 using Serilog;
-using System.Xml.Linq;
+
 
 namespace CatalogService.Application.Commands.ProductCommands.CreateProduct
 {
@@ -10,13 +11,16 @@ namespace CatalogService.Application.Commands.ProductCommands.CreateProduct
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IInventoryGrpcClient _inventoryGrpcClient;
         private readonly ILogger _logger = Log.ForContext<CreateProductCommandHandler>();
 
         public CreateProductCommandHandler(IProductRepository productRepository,
-            ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository,
+            IInventoryGrpcClient inventoryGrpcClient)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
+            _inventoryGrpcClient = inventoryGrpcClient;
         }
 
         public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -48,6 +52,12 @@ namespace CatalogService.Application.Commands.ProductCommands.CreateProduct
             );
 
             await _productRepository.AddProductAsync(product);
+
+            await _inventoryGrpcClient.CreateInventoryAsync(
+                product.Id,
+                product.Name,
+                product.Stock
+            );
 
             _logger.Information("Product created successfully {ProductId}", product.Id);
             return product.Id;
