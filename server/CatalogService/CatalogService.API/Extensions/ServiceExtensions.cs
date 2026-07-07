@@ -1,9 +1,10 @@
 ﻿using CatalogService.Application.Commands.CategoryCommands.CreateCategory;
+using CatalogService.Application.Contracts;
 using CatalogService.Domain.Repositories;
+using CatalogService.Infrastructure.GrpcClients;
 using CatalogService.Infrastructure.Persistence;
 using CatalogService.Infrastructure.Repositories;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -13,6 +14,16 @@ namespace CatalogService.API.Extensions
 {
     public static class ServiceExtensions
     {
+        public static IServiceCollection AddRouteOptions(this IServiceCollection services,
+                IConfiguration configuration)
+        {
+            services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+            });
+            return services;
+        }
+
         public static IServiceCollection AddMongoDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<CatalogDbContext>();
@@ -103,5 +114,14 @@ namespace CatalogService.API.Extensions
 
             return services;
         }
+
+        public static IServiceCollection AddInventoryGrpcClient(this IServiceCollection services)
+        {
+            services.AddSingleton<IInventoryGrpcClient>(sp =>
+                new InventoryGrpcClient("http://localhost:9090"));
+
+            return services;
+        }
+
     }
 }

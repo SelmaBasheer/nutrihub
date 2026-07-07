@@ -17,11 +17,19 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 server:
-  port: 5008
+  port: 5003
 
 jwt:
   secret: NutriHub@SuperSecretKey#2026!XyZ987
+  issuer: NutriHub.IdentityService
+  audience: NutriHub.Client
   expiration: 3600000
 
 springdoc:

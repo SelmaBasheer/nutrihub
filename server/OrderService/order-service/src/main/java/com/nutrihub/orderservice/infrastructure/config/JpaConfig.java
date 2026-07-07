@@ -10,8 +10,5 @@ import org.springframework.web.client.RestTemplate;
         basePackages = "com.nutrihub.orderservice.infrastructure.persistence"
 )
 public class JpaConfig {
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+
 }
