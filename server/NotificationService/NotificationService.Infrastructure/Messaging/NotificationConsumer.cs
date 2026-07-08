@@ -41,20 +41,34 @@ namespace NotificationService.Infrastructure.Messaging
                 Password = _configuration["RabbitMQ:Password"] ?? "guest"
             };
 
-            _connection = await factory.CreateConnectionAsync(cancellationToken);    
-            _channel = await _connection.CreateChannelAsync(cancellationToken : cancellationToken);
+            var retryCount = 0;
+            while(retryCount < 10)
+            {
+                try
+                {
+                    _connection = await factory.CreateConnectionAsync(cancellationToken);
+                    _channel = await _connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-            // Declare queue - makes sure queue exists before consuming
-            await _channel.QueueDeclareAsync(
-                queue: QueueName,
-                durable: true,
-                exclusive: false,
-                autoDelete: false,
-                cancellationToken: cancellationToken
-                );
+                    // Declare queue - makes sure queue exists before consuming
+                    await _channel.QueueDeclareAsync(
+                        queue: QueueName,
+                        durable: true,
+                        exclusive: false,
+                        autoDelete: false,
+                        cancellationToken: cancellationToken
+                        );
 
-            _logger.LogInformation("NotificationConsumer connected to RabbitMQ");
-
+                    _logger.LogInformation("NotificationConsumer connected to RabbitMQ");
+                    break;
+                } 
+                catch(Exception ex)
+                {
+                    retryCount++;
+                    _logger.LogWarning("RabbitMQ connection attempt {RetryCount} failed. Retrying in 5 seconds...", retryCount);
+                    await Task.Delay(5000, cancellationToken);
+                }
+            }
+            
             await base.StartAsync(cancellationToken);   
         }
 
