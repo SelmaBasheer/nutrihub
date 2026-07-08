@@ -1,8 +1,5 @@
-version: '3.8'
-
 services:
-
-  # ── DATABASES ──────────────────────────────────────────
+  # DATABASES
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -10,6 +7,12 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "NutriHub@123" -Q "SELECT 1" -b -o /dev/null -No
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
   mongodb:
     image: mongo:7
@@ -32,8 +35,14 @@ services:
       MYSQL_DATABASE: NutriHubInventoryDb
     ports:
       - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pNutriHub@123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
 
- # ── MESSAGE BROKER ─────────────────────────────────────
+  # MESSAGE BROKER
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -42,38 +51,41 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
-  # ── SERVICES ───────────────────────────────────────────
+  # SERVICES
   identity-service:
-    build:
-      context: ./IdentityService
-      dockerfile: Dockerfile
+    image: selmab30/nutrihub-identity:latest
     ports:
       - "5001:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NutriHubIdentityDb;User Id=sa;Password=NutriHub@123;TrustServerCertificate=True
     depends_on:
-      - sqlserver
+      sqlserver:
+        condition: service_healthy
 
   catalog-service:
-    build:
-      context: ./CatalogService
-      dockerfile: Dockerfile
+    image: selmab30/nutrihub-catalog:latest
     ports:
       - "5002:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
-      - MongoDbSettings__DatabaseName=NutriHubCatalogDb
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__MongoConnection=mongodb://mongodb:27017
+      - MongoDB__DatabaseName=NutriHubCatalogDb
       - GrpcSettings__InventoryUrl=http://inventory-service:9090
     depends_on:
       - mongodb
 
   order-service:
-    build:
-      context: ./OrderService/order-service
-      dockerfile: Dockerfile
+    image: selmab30/nutrihub-order:latest
     ports:
       - "5003:5003"
     environment:
@@ -87,13 +99,12 @@ services:
       - INVENTORY_SERVICE_URL=http://inventory-service:5004/api/inventory
     depends_on:
       - postgres
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
       - inventory-service
 
   inventory-service:
-    build:
-      context: ./InventoryService/inventory-service
-      dockerfile: Dockerfile
+    image: selmab30/nutrihub-inventory:latest
     ports:
       - "5004:5004"
       - "9090:9090"
@@ -106,33 +117,33 @@ services:
       - SPRING_RABBITMQ_USERNAME=guest
       - SPRING_RABBITMQ_PASSWORD=guest
     depends_on:
-      - mysql    
-      - rabbitmq
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   notification-service:
-    build:
-      context: ./NotificationService
-      dockerfile: Dockerfile
+    image: selmab30/nutrihub-notification:latest
     ports:
       - "5005:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
       - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__Port=5672
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
     depends_on:
-      - rabbitmq
-
+      rabbitmq:
+        condition: service_healthy
 
   api-gateway:
-    build:
-      context: ./NutriHub.ApiGateway
-      dockerfile: Dockerfile
+    image: selmab30/nutrihub-gateway:latest
     ports:
       - "5000:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
     depends_on:
       - identity-service
       - catalog-service
