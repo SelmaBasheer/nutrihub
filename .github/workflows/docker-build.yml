@@ -1,0 +1,73 @@
+name: Build and Push Docker Images
+
+# WHEN does this run?
+# - Every push to master branch (after PR is merged)
+# - Every Pull Request targeting master (build only, no push)
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    name: Build ${{ matrix.service }}
+    runs-on: ubuntu-latest   # GitHub gives us a free Linux machine to run this
+
+    # Matrix = run this job 6 times in PARALLEL, once per service
+    strategy:
+      matrix:
+        include:
+          - service: identity-service
+            context: server/IdentityService
+            image: selmab30/nutrihub-identity
+
+          - service: catalog-service
+            context: server/CatalogService
+            image: selmab30/nutrihub-catalog
+
+          - service: order-service
+            context: server/OrderService/order-service
+            image: selmab30/nutrihub-order
+
+          - service: inventory-service
+            context: server/InventoryService/inventory-service
+            image: selmab30/nutrihub-inventory
+
+          - service: notification-service
+            context: server/NotificationService
+            image: selmab30/nutrihub-notification
+
+          - service: api-gateway
+            context: server/NutriHub.ApiGateway
+            image: selmab30/nutrihub-gateway
+
+    steps:
+      # Step 1: Download the code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Docker Buildx (advanced builder with caching support)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Login to Docker Hub (only on push to master, not on PRs)
+      - name: Login to Docker Hub
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 4: Build the Docker image and push to Docker Hub
+      - name: Build and Push ${{ matrix.service }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          dockerfile: ${{ matrix.context }}/Dockerfile
+          push: ${{ github.event_name == 'push' }}   # only push on master, not PRs
+          tags: ${{ matrix.image }}:latest
+          cache-from: type=gha   # use GitHub Actions cache to speed up builds
+          cache-to: type=gha,mode=max
