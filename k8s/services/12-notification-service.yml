@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: nutrihub
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: selmab30/nutrihub-notification:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ASPNETCORE_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: ASPNETCORE_URLS
+            - name: RabbitMQ__HostName
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: RabbitMQ__HostName
+            - name: RabbitMQ__Port
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: RabbitMQ__Port
+            - name: RabbitMQ__UserName
+              valueFrom:
+                secretKeyRef:
+                  name: nutrihub-secrets
+                  key: rabbitmq-username
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  name: nutrihub-secrets
+                  key: rabbitmq-password
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-service
+  namespace: nutrihub
+spec:
+  selector:
+    app: notification-service
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP

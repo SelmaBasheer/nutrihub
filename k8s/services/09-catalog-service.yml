@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-service
+  namespace: nutrihub
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: catalog-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: catalog-service
+    spec:
+      containers:
+        - name: catalog-service
+          image: selmab30/nutrihub-catalog:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: ASPNETCORE_ENVIRONMENT
+            - name: ASPNETCORE_URLS
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: ASPNETCORE_URLS
+            - name: ConnectionStrings__MongoConnection
+              value: "mongodb://mongodb-service:27017"
+            - name: MongoDB__DatabaseName
+              value: "NutriHubCatalogDb"
+            - name: GrpcSettings__InventoryUrl
+              valueFrom:
+                configMapKeyRef:
+                  name: nutrihub-config
+                  key: GrpcSettings__InventoryUrl
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-service
+  namespace: nutrihub
+spec:
+  selector:
+    app: catalog-service
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
